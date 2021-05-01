@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home</title>
+</head>
+<body>
+    <h1>Smart Home</h1>
+    <form action="." method="POST">
+        {%csrf_token%}
+        <label for="">Name</label>
+        <input type="text" name="name" id="name">
+        <hr>
+        <br>
+        <label for="">Board ID</label>
+        <input type="text" name="board_id" id="board_id">
+        <hr>
+        <br>
+        <label for="gpio">GPIO#</label>
+        <input type="text" name="gpio" id="gpio">
+        <hr>
+        <br>
+        <label for="state">Choose a state:</label>
+        <select name="state" id="state">
+        <option value="0">OFF</option>
+        <option value="1">ON</option>
+        </select>
+        <hr>
+        <br>
+        <input type="submit" value="submit">
+    </form>
+    
+
+    <ul>
+        {% for c in control %}
+        <li>Name: {{ c.name }}</li>
+        <li>Board: {{ c.board }}</li>
+        <li>GPIO#: {{ c.gpio }}</li>
+        <li>Change State: <button id="BtnOn{{ forloop.counter }}" onclick="updateState({{ c.id }}, 1, {{forloop.counter}})">ON</button> || <button id="BtnOff{{ forloop.counter }}" onclick="updateState({{ c.id }}, 0, {{forloop.counter}})">OFF</button></li>
+        {% endfor %}
+    </ul>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script>
+        window.addEventListener('load', (event) => {
+            {% for c in control %}
+                {% if c.state == '0' %}
+                    document.getElementById('BtnOff{{ forloop.counter }}').disabled = true;
+                {% else %}
+                document.getElementById('BtnOn{{ forloop.counter }}').disabled = true;
+                {%  endif %}
+            {% endfor %}
+        });
+
+        function updateState(id, state, counter) {
+
+            if(state == 1) {
+                document.getElementById('BtnOn'+counter).disabled = true;
+                $.ajax({
+                    url: '/ajax/updatestate/',
+                    type: 'get',
+                    data: {
+                        id: id,
+                        state: state,
+                        counter: counter,
+                    },
+                    success: function(response) {
+                        document.getElementById('BtnOff'+response.counter).disabled = false;
+                        document.getElementById('BtnOn'+response.counter).disabled = true;
+                        
+                    }
+                });
+            } else {
+                document.getElementById('BtnOff'+counter).disabled = true;
+                $.ajax({
+                    url: '/ajax/updatestate/',
+                    type: 'get',
+                    data: {
+                        id: id,
+                        state: state,
+                        counter: counter,
+                    },
+                    success: function(response) {
+                        document.getElementById('BtnOff'+response.counter).disabled = true;
+                        document.getElementById('BtnOn'+response.counter).disabled = false;
+                        
+                        
+                    }
+                });
+            }
+        }
+
+        // onclick="updateState({{ c.id }}, 1, forloop.counter)"
+    </script>
+</body>
+</html>
+
