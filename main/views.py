@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Board, Output
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 def index(request):
     control = {}
@@ -48,5 +48,6 @@ def displayBoardData(request, board):
     context = {}
     for o in output:
         context[o.gpio] = o.state
-    return JsonResponse(context, status=200)
+    str1 = str(context)
+    return HttpResponse(str1)
     
