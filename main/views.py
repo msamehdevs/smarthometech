@@ -40,5 +40,13 @@ def updatestate(request):
 
     print(output.state + ' now')
     
-    return JsonResponse({'state': state, 'id': output_id, 'counter': counter}, status=200)  
+    return JsonResponse({'state': state, 'id': output_id, 'counter': counter}, status=200)
+
+
+def displayBoardData(request, board):
+    output = Output.objects.filter(board=board)
+    context = {}
+    for o in output:
+        context[o.gpio] = o.state
+    return JsonResponse(context, status=200)
     
