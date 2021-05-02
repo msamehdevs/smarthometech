@@ -48,6 +48,6 @@ def displayBoardData(request, board):
     context = {}
     for o in output:
         context[o.gpio] = o.state
-    str1 = str(context)
+    str1 = json.dumps(context)
     return HttpResponse(str1)
     
