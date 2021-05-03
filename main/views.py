@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Board, Output
 import json
+import requests
 from django.http import JsonResponse, HttpResponse
 
 def index(request):
@@ -39,12 +40,15 @@ def updatestate(request):
     output.save()
 
     print(output.state + ' now')
-    
+    req = requests.get('http://smarthometec.herokuapp.com/data/1')
+    print(req)
     return JsonResponse({'state': state, 'id': output_id, 'counter': counter}, status=200)
 
 
 def displayBoardData(request, board):
     output = Output.objects.filter(board=board)
+    
+    
     context = {}
     for o in output:
         context[o.gpio] = o.state
