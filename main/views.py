@@ -40,7 +40,7 @@ def updatestate(request):
     output.save()
 
     print(output.state + ' now')
-    req = requests.get('http://smarthometec.herokuapp.com/data/1')
+    req = requests.get('http://smarthometech.herokuapp.com/data/1')
     print(req)
     return JsonResponse({'state': state, 'id': output_id, 'counter': counter}, status=200)
 
