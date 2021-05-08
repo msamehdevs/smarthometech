@@ -25,7 +25,7 @@ def index(request):
             output.save()
 
 
-    control = Output.objects.all()
+    control = Output.objects.all().order_by('name')
     print(control)
         
     return render(request, 'main/index.html', {'control': control})
@@ -38,15 +38,11 @@ def updatestate(request):
     output = Output.objects.get(id=output_id)
     output.state = state
     output.save()
-
-    print(output.state + ' now')
-    req = requests.get('http://smarthometech.herokuapp.com/data/1')
-    print(req)
     return JsonResponse({'state': state, 'id': output_id, 'counter': counter}, status=200)
 
 
 def displayBoardData(request, board):
-    output = Output.objects.filter(board=board)
+    output = Output.objects.filter(board=board).order_by('name')
     
     
     context = {}
